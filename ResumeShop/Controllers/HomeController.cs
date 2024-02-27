@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using ResumeShop.Models;
 using System;
@@ -22,8 +23,15 @@ namespace ResumeShop.Controllers
         {
             return View();
         }
+        
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [Route("ContactUs")]
+        public IActionResult ContactUs()
         {
             return View();
         }
