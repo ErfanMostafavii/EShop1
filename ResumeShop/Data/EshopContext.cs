@@ -10,10 +10,14 @@ namespace ResumeShop.Data
 
         }
         public DbSet<Category> categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<CategoryToProduct> CategoryToProducts { get; set; }
+        public DbSet<Item> Items { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            #region
+            modelBuilder.Entity<CategoryToProduct>().HasKey(c => new { c.ProductId, c.CategoryId });
+            #region SeedData
 
             modelBuilder.Entity<Category>().HasData(new Category()
             {
