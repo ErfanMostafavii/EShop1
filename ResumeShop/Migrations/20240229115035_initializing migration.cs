@@ -2,17 +2,31 @@
 
 namespace ResumeShop.Migrations
 {
-    public partial class CreationOfTables : Migration
+    public partial class initializingmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_categories", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Price = table.Column<decimal>(nullable: false),
+                    Price = table.Column<decimal>(type: "Money", nullable: false),
                     QuantityInStock = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -65,6 +79,55 @@ namespace ResumeShop.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Items",
+                columns: new[] { "Id", "Price", "QuantityInStock" },
+                values: new object[,]
+                {
+                    { 1, 33m, 4 },
+                    { 2, 34m, 9 },
+                    { 3, 45m, 10 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "categories",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "لوازم سامسونگ", "سامسونگ" },
+                    { 2, "لوازم هواوی", "هواوی" },
+                    { 3, "لوازم شیایومی", "شیاومی" },
+                    { 4, "لوازم اپل", "اپل" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "ItemId", "Name" },
+                values: new object[] { 1, "آیفون سیزده سی اچ پارت نامبر اروپا", 1, "گوشی موبایل iphone 13" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "ItemId", "Name" },
+                values: new object[] { 2, "آیفون سیزده سی اچ پارت نامبر چین", 2, "گوشی موبایل iphone 12" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "ItemId", "Name" },
+                values: new object[] { 3, "آیفون سیزده سی اچ پارت نامبر امریکا", 3, "گوشی موبایل iphone 11" });
+
+            migrationBuilder.InsertData(
+                table: "CategoryToProducts",
+                columns: new[] { "ProductId", "CategoryId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 4 },
+                    { 2, 1 },
+                    { 2, 3 },
+                    { 3, 1 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CategoryToProducts_CategoryId",
                 table: "CategoryToProducts",
@@ -81,6 +144,9 @@ namespace ResumeShop.Migrations
         {
             migrationBuilder.DropTable(
                 name: "CategoryToProducts");
+
+            migrationBuilder.DropTable(
+                name: "categories");
 
             migrationBuilder.DropTable(
                 name: "Products");

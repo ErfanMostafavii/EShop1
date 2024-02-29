@@ -75,6 +75,38 @@ namespace ResumeShop.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("CategoryToProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ProductId = 1,
+                            CategoryId = 2
+                        },
+                        new
+                        {
+                            ProductId = 2,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ProductId = 2,
+                            CategoryId = 3
+                        },
+                        new
+                        {
+                            ProductId = 3,
+                            CategoryId = 1
+                        },
+                        new
+                        {
+                            ProductId = 1,
+                            CategoryId = 4
+                        });
                 });
 
             modelBuilder.Entity("ResumeShop.Models.Item", b =>
@@ -85,7 +117,7 @@ namespace ResumeShop.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("Money");
 
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
@@ -93,6 +125,26 @@ namespace ResumeShop.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Items");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Price = 33m,
+                            QuantityInStock = 4
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Price = 34m,
+                            QuantityInStock = 9
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Price = 45m,
+                            QuantityInStock = 10
+                        });
                 });
 
             modelBuilder.Entity("ResumeShop.Models.Product", b =>
@@ -117,6 +169,29 @@ namespace ResumeShop.Migrations
                         .IsUnique();
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "آیفون سیزده سی اچ پارت نامبر اروپا",
+                            ItemId = 1,
+                            Name = "گوشی موبایل iphone 13"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "آیفون سیزده سی اچ پارت نامبر چین",
+                            ItemId = 2,
+                            Name = "گوشی موبایل iphone 12"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "آیفون سیزده سی اچ پارت نامبر امریکا",
+                            ItemId = 3,
+                            Name = "گوشی موبایل iphone 11"
+                        });
                 });
 
             modelBuilder.Entity("ResumeShop.Models.CategoryToProduct", b =>
