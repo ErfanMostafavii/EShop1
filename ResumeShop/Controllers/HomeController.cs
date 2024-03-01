@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ResumeShop.Data;
 using ResumeShop.Models;
@@ -26,13 +27,36 @@ namespace ResumeShop.Controllers
             var products = _context.Products.ToList();
             return View(products);
         }
-        
+
 
         public IActionResult Privacy()
         {
             return View();
         }
         public IActionResult Detail(int id)
+        {
+            var product = _context.Products
+                .Include(p => p.Item).SingleOrDefault(p => p.Id ==id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            var categories = _context.Products
+                .Where(p => p.Id == id)
+                .SelectMany(c => c.categoryToProducts)
+                .Select(ca => ca.Category)
+                .ToList();
+
+            var vm = new DetailsViewModel()
+            {
+                Product = product,
+                Categories = categories
+            };
+
+            return View(vm);
+        }
+
+        public IActionResult AddToCart(Item itemId)
         {
             return null;
         }
