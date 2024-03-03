@@ -16,6 +16,10 @@ namespace ResumeShop.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private EshopContext _context { get; set; }
+
+        private static Cart _cart = new Cart();
+
+
         public HomeController(ILogger<HomeController> logger, EshopContext context)
         {
             _logger = logger;
@@ -56,9 +60,36 @@ namespace ResumeShop.Controllers
             return View(vm);
         }
 
-        public IActionResult AddToCart(Item itemId)
+        public IActionResult AddToCart(int itemId)
         {
-            return null;
+            var product = _context.Products.Include(p => p.Item).SingleOrDefault(p => p.ItemId == itemId);
+            if (product != null)
+            {
+                var cartItem = new CartItem()
+                {
+                    Item = product.Item,
+                    Quantity = 1,
+                };
+                _cart.AddCartItem(cartItem);    
+            }
+            return RedirectToAction("ShowCart");
+        }
+
+        public IActionResult ShowCart()
+        {
+            var CartVM = new CartViewModel()
+            {
+                CartItems = _cart.CartItems,
+                OrderTotal = _cart.CartItems.Sum(c => c.getTotalPrice())
+
+            };
+            return View(CartVM);
+        }
+
+        public IActionResult RemoveCart(int itemId)
+        {
+            _cart.RemoveCartItem(itemId);
+            return RedirectToAction("ShowCart");
         }
 
         [Route("ContactUs")]
