@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ResumeShop.Data;
+using ResumeShop.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +27,16 @@ namespace ResumeShop
         {
             services.AddControllersWithViews();
 
-
+            #region DbContext
             services.AddDbContext<EshopContext>(options =>
             {
                 options.UseSqlServer("Data Source = .;Initial Catalog= EshopCore;Integrated Security = true");
             });
+            #endregion
+
+            #region IoC
+            services.AddScoped<IGroupRepository, GroupRepository>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
