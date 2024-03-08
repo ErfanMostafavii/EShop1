@@ -28,4 +28,23 @@ namespace ResumeShop.Models
         public string rePassword { get; set; }
 
     }
+
+    public class LoginViewModel
+    {
+        [MaxLength(200)]
+        [EmailAddress]
+        [Display(Name = "ایمیل")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        public string Email { get; set; }
+
+        [MaxLength(50)]
+        [DataType(DataType.Password)]
+        [Display(Name = "کلمه عبور")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+
+        public string Password { get; set; }
+
+        [Display(Name = "مرا به خاطر بسپار")]
+        public bool RememberMe { get; set; }
+    }
 }

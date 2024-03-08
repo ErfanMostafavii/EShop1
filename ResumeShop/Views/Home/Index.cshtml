@@ -6,5 +6,18 @@
 
 <div class="text-center">
     <h1 class="display-4">به فروشگاه خوش آمدید</h1>
-    
+    <div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-3">
+            <div class="card">
+                <img src="/images/@(item.ItemId).jpg" height="160px" width="160px" class="card-img-top img-thumbnail">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <a href="/Home/Detail/@item.ItemId">جزییات محصول</a>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
 </div>
