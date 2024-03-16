@@ -14,6 +14,8 @@ namespace ResumeShop.Data
         public DbSet<CategoryToProduct> CategoryToProducts { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Users> Users { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

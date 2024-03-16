@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ResumeShop.Models
@@ -16,5 +17,8 @@ namespace ResumeShop.Models
         [Required]
         public DateTime RegisterDate { get; set; }
         public bool IsAdmin { get; set; }
+
+        public List<Order> orders { get; set; }
+        public List<OrderDetail> OrderDetails { get; set; }
     }
 }

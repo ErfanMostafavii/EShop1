@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ResumeShop.Controllers
@@ -17,7 +19,6 @@ namespace ResumeShop.Controllers
         private readonly ILogger<HomeController> _logger;
         private EshopContext _context { get; set; }
 
-        private static Cart _cart = new Cart();
 
 
         public HomeController(ILogger<HomeController> logger, EshopContext context)
@@ -40,7 +41,7 @@ namespace ResumeShop.Controllers
         public IActionResult Detail(int id)
         {
             var product = _context.Products
-                .Include(p => p.Item).SingleOrDefault(p => p.Id ==id);
+                .Include(p => p.Item).SingleOrDefault(p => p.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -60,37 +61,76 @@ namespace ResumeShop.Controllers
             return View(vm);
         }
 
+        [Authorize]
         public IActionResult AddToCart(int itemId)
         {
             var product = _context.Products.Include(p => p.Item).SingleOrDefault(p => p.ItemId == itemId);
             if (product != null)
             {
-                var cartItem = new CartItem()
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier).ToString());
+                var order = _context.Orders.FirstOrDefault(o => o.UserId == userId && !o.isFinally);
+                if (order != null)
                 {
-                    Item = product.Item,
-                    Quantity = 1,
-                };
-                _cart.AddCartItem(cartItem);    
+                    var orderDetail = _context.OrderDetails.FirstOrDefault(d => d.OrderId == order.OrderId && d.ProductId == product.Id);
+                    if (orderDetail != null)
+                    {
+                        orderDetail.Count += 1;
+                    }
+                    else
+                    {
+                        _context.OrderDetails.Add(new OrderDetail()
+                        {
+                            OrderId = order.OrderId,
+                            ProductId = product.Id,
+                            Price = product.Item.Price,
+                            Count = 1
+
+                        });
+                    }
+                }
+                else
+                {
+                    order = new Order()
+                    {
+                        isFinally = false,
+                        CreatedDate = DateTime.Now,
+                        UserId = userId
+                    };
+                    _context.Orders.Add(order);
+                    _context.SaveChanges();
+                    _context.OrderDetails.Add(new OrderDetail()
+                    {
+                        OrderId = order.OrderId,
+                        ProductId = product.Id,
+                        Price = product.Item.Price,
+                        Count = 1
+
+                    });
+                }
+                _context.SaveChanges();
             }
             return RedirectToAction("ShowCart");
         }
-
+        [Authorize]
         public IActionResult ShowCart()
         {
-            var CartVM = new CartViewModel()
-            {
-                CartItems = _cart.CartItems,
-                OrderTotal = _cart.CartItems.Sum(c => c.getTotalPrice())
-
-            };
-            return View(CartVM);
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier).ToString());
+            var order = _context.Orders.Where(o => o.UserId == userId && !o.isFinally)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(c => c.Product).FirstOrDefault();
+            return View(order);
         }
 
-        public IActionResult RemoveCart(int itemId)
+        [Authorize]
+        public IActionResult RemoveCart(int detailId)
         {
-            _cart.RemoveCartItem(itemId);
+            var orderDetail = _context.OrderDetails.Find(detailId);
+            _context.Remove(orderDetail);
+            _context.SaveChanges();
             return RedirectToAction("ShowCart");
+
         }
+
 
         [Route("ContactUs")]
         public IActionResult ContactUs()

@@ -1,35 +1,45 @@
-﻿@model CartViewModel
-
+﻿@model Order
 @{
-    ViewData["Title"] = "ShowCart";
+    ViewData["Title"] = "سبد خرید";
 }
 
-<table class="table table-stripped">
-    <thead class="thead-dark">
 
-        <tr>
-            <th>کالا</th>
-            <th>تعداد</th>
-            <th>قیمت</th>
-        </tr>
-    </thead>
+@if (Model != null)
+{
+    <table class="table table-stripped">
+        <thead class="thead-dark">
 
-
-    <tbody>
-
-        @foreach (var item in Model.CartItems)
-        {
             <tr>
-                <td>@item.Item.Product.Name</td>
-                <td>@item.Quantity</td>
-                <td>@item.getTotalPrice()</td>
-                <td>
-                    <a asp-controller="Home" asp-action="RemoveCart" asp-route-ItemId="@item.Item.Id">حذف</a>
-                </td>
+                <th>کالا</th>
+                <th>تعداد</th>
+                <th>قیمت</th>
             </tr>
-        }
+        </thead>
 
-    </tbody>
 
-</table>
-<h5>@Model.OrderTotal جمع کل:</h5>
+        <tbody>
+
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Count</td>
+                    <td>@(item.Count * @item.Price)</td>
+                    <td>
+                        <a asp-controller="Home" asp-action="RemoveCart" asp-route-detailId="@item.DetailId">حذف</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+    <h5>@Model.OrderDetails.Sum(s => s.Count * s.Price) جمع کل:</h5>
+
+}
+else
+{
+    <div class="alert alert-danger">فاکتوری نیست</div>
+}
+
+

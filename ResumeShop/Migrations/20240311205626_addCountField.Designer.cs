@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ResumeShop.Data;
 
 namespace ResumeShop.Migrations
 {
     [DbContext(typeof(EshopContext))]
-    partial class EshopContextModelSnapshot : ModelSnapshot
+    [Migration("20240311205626_addCountField")]
+    partial class addCountField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,12 +163,15 @@ namespace ResumeShop.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UsersUserId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("isFinally")
                         .HasColumnType("bit");
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UsersUserId");
 
                     b.ToTable("Orders");
                 });
@@ -298,15 +303,13 @@ namespace ResumeShop.Migrations
                 {
                     b.HasOne("ResumeShop.Models.Users", "Users")
                         .WithMany("orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UsersUserId");
                 });
 
             modelBuilder.Entity("ResumeShop.Models.OrderDetail", b =>
                 {
                     b.HasOne("ResumeShop.Models.Order", "Order")
-                        .WithMany("OrderDetails")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

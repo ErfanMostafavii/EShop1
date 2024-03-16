@@ -27,6 +27,7 @@ namespace ResumeShop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddRazorPages();
 
             #region DbContext
             services.AddDbContext<EshopContext>(options =>
@@ -70,6 +71,7 @@ namespace ResumeShop
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
