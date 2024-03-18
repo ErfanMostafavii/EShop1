@@ -74,7 +74,8 @@ namespace ResumeShop.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name,user.Email.ToString())
+                new Claim(ClaimTypes.Name,user.Email.ToString()),
+                 new Claim("IsAdmin", user.IsAdmin.ToString()),
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
